@@ -126,11 +126,11 @@ export default function Dashboard() {
   const handleDays = (event) => {
     setDays(event.target.value);
   };
-  const [width, height] = useWindowSize();
+  const [width] = useWindowSize();
   const isNotTouch = width >= 1125;
 
   const handleDelete = () => {
-    console.info("You clicked the delete icon.");
+    console.info("You clicked the icon.");
   };
 
   if (isNotTouch) {
