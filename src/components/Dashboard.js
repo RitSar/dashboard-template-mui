@@ -1,21 +1,10 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
 import CollectionsIcon from "@material-ui/icons/Collections";
 import SettingsIcon from "@material-ui/icons/Settings";
-import Avatar from "@material-ui/core/Avatar";
-import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import DoneIcon from "@material-ui/icons/ControlPoint";
@@ -25,7 +14,18 @@ import ErrorIcon from "@material-ui/icons/Error";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import {
+  AppBar,
+  Avatar,
+  Dialog,
+  InputLabel,
+  MenuItem,
+  Button,
+  FormControl,
+  Select,
+  IconButton,
   Grid,
+  Typography,
+  Toolbar,
   Hidden,
   Paper,
   Checkbox,
@@ -38,6 +38,7 @@ import InstaIcon from "./icons/InstaIcon";
 import YoutubeIcon from "./icons/YoutubeIcon";
 import FacebookIcon from "./icons/FacebookIcon";
 import ChatCard from "./ChatCard";
+import Touchview from "./Touchview";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,6 +99,19 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
+function useWindowSize() {
+  const [size, setSize] = React.useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener("resize", updateSize);
+    updateSize();
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+  return size;
+}
+
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -112,416 +126,433 @@ export default function Dashboard() {
   const handleDays = (event) => {
     setDays(event.target.value);
   };
+  const [width, height] = useWindowSize();
+  const isNotTouch = width >= 1125;
+
   const handleDelete = () => {
     console.info("You clicked the delete icon.");
   };
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static" color="transparent">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            <strong>
-              Rep<span style={{ color: "#4967e9" }}>suite</span>.
-            </strong>
-          </Typography>
-          <IconButton aria-label="add">
-            <ControlPointIcon />
-          </IconButton>
-          <IconButton aria-label="collections">
-            <CollectionsIcon />
-          </IconButton>
-          <IconButton aria-label="settings">
-            <SettingsIcon />
-          </IconButton>
+  if (isNotTouch) {
+    return (
+      <div className={classes.root}>
+        <AppBar position="static" color="transparent">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              <strong>
+                Rep<span style={{ color: "#4967e9" }}>suite</span>.
+              </strong>
+            </Typography>
+            <IconButton aria-label="add">
+              <ControlPointIcon />
+            </IconButton>
+            <IconButton aria-label="collections">
+              <CollectionsIcon />
+            </IconButton>
+            <IconButton aria-label="settings">
+              <SettingsIcon />
+            </IconButton>
 
-          <Button onClick={handleClickOpen}>
-            <Avatar alt="User" src="/user.svg" style={{ marginRight: 10 }} />
-            <Hidden smDown>Rachna Ranade</Hidden>
-          </Button>
-          <Dialog
-            onClose={handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={open}
-          >
-            <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-              Modal title
-            </DialogTitle>
-            <DialogContent dividers>
-              <Typography gutterBottom>
-                Cras mattis consectetur purus sit amet fermentum. Cras justo
-                odio, dapibus ac facilisis in, egestas eget quam. Morbi leo
-                risus, porta ac consectetur ac, vestibulum at eros.
-              </Typography>
-              <Typography gutterBottom>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur
-                et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus
-                dolor auctor.
-              </Typography>
-              <Typography gutterBottom>
-                Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-                cursus magna, vel scelerisque nisl consectetur et. Donec sed
-                odio dui. Donec ullamcorper nulla non metus auctor fringilla.
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button autoFocus onClick={handleClose} color="primary">
-                Save changes
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Toolbar>
-      </AppBar>
-
-      <div className="content">
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <Paper className={classes.paper}>
-              <Typography variant="h6">Pages and Channels</Typography>
-              <Paper className="paperBadge">
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">Rachna Ranade</Typography>
-                <Box ml="auto" mt={0.5}>
-                  <YoutubeIcon />
-                </Box>
-              </Paper>
-              <Paper className="paperBadge">
-                <Checkbox
-                  defaultChecked={false}
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">rac.ranade3</Typography>
-                <Box ml="auto" mt={0.5}>
-                  <InstaIcon />
-                </Box>
-              </Paper>
-              <Paper className="paperBadge">
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">Rachna Ranade</Typography>
-                <Box ml="auto" mt={0.5}>
-                  <FacebookIcon />
-                </Box>
-              </Paper>
-
-              <Box mt={5}>
-                <Typography variant="h6">Status</Typography>
-              </Box>
-              <Box className="paperBadge">
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">
-                  Requires manual attention
+            <Button onClick={handleClickOpen}>
+              <Avatar alt="User" src="/user.svg" style={{ marginRight: 10 }} />
+              <Hidden smDown>Rachna Ranade</Hidden>
+            </Button>
+            <Dialog
+              onClose={handleClose}
+              aria-labelledby="customized-dialog-title"
+              open={open}
+            >
+              <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+                <Button>
+                  <Avatar
+                    alt="User"
+                    src="/user.svg"
+                    style={{ marginRight: 10 }}
+                  />
+                  Rachna Ranade
+                </Button>
+              </DialogTitle>
+              <DialogContent dividers>
+                <Typography gutterBottom>
+                  Cras mattis consectetur purus sit amet fermentum. Cras justo
+                  odio, dapibus ac facilisis in, egestas eget quam. Morbi leo
+                  risus, porta ac consectetur ac, vestibulum at eros.
                 </Typography>
-              </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 10,
-                }}
-              >
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">Marked Safe by:</Typography>
-              </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 50,
-                }}
-              >
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  size="small"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="caption">Manual action</Typography>
-              </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 50,
-                }}
-              >
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  size="small"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="caption">AI</Typography>
-              </Box>
+                <Typography gutterBottom>
+                  Praesent commodo cursus magna, vel scelerisque nisl
+                  consectetur et. Vivamus sagittis lacus vel augue laoreet
+                  rutrum faucibus dolor auctor.
+                </Typography>
+                <Typography gutterBottom>
+                  Aenean lacinia bibendum nulla sed consectetur. Praesent
+                  commodo cursus magna, vel scelerisque nisl consectetur et.
+                  Donec sed odio dui. Donec ullamcorper nulla non metus auctor
+                  fringilla.
+                </Typography>
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={handleClose} color="primary">
+                  Save changes
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Toolbar>
+        </AppBar>
 
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 10,
-                }}
-              >
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="body1">Marked Safe by:</Typography>
-              </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 50,
-                }}
-              >
-                <Checkbox
-                  defaultChecked={false}
-                  color="primary"
-                  size="small"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="caption">Manual action</Typography>
-              </Box>
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingLeft: 50,
-                }}
-              >
-                <Checkbox
-                  defaultChecked
-                  color="primary"
-                  size="small"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-                <Typography variant="caption">Keyword</Typography>
-              </Box>
-            </Paper>
+        <div className="content">
+          <Grid container spacing={3}>
+            <Grid item xs={3}>
+              <Paper className={classes.paper}>
+                <Typography variant="h6">Pages and Channels</Typography>
+                <Paper className="paperBadge">
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">Rachna Ranade</Typography>
+                  <Box ml="auto" mt={0.5}>
+                    <YoutubeIcon />
+                  </Box>
+                </Paper>
+                <Paper className="paperBadge">
+                  <Checkbox
+                    defaultChecked={false}
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">rac.ranade3</Typography>
+                  <Box ml="auto" mt={0.5}>
+                    <InstaIcon />
+                  </Box>
+                </Paper>
+                <Paper className="paperBadge">
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">Rachna Ranade</Typography>
+                  <Box ml="auto" mt={0.5}>
+                    <FacebookIcon />
+                  </Box>
+                </Paper>
 
-            <Paper className={classes.paper}>
-              <Box mb={1}>
-                <Typography variant="h6">Plans and Usage</Typography>
-              </Box>
-
-              <Typography variant="body1">Accounts Connected</Typography>
-              <Slider
-                defaultValue={2}
-                aria-labelledby="discrete-slider"
-                valueLabelDisplay="auto"
-                step={1}
-                marks
-                min={0}
-                max={3}
-              />
-              <Typography variant="body1">Comments processed</Typography>
-              <Slider
-                defaultValue={5000}
-                aria-labelledby="discrete-slider"
-                valueLabelDisplay="auto"
-                step={1000}
-                marks
-                min={0}
-                max={10000}
-              />
-            </Paper>
-          </Grid>
-
-          <Grid item xs={5}>
-            <Box className="paperBadge" style={{ flexWrap: "wrap" }}>
-              <Box mr={1}>
-                <Typography variant="body1">Date Range :</Typography>
-              </Box>
-
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">
-                  Time
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={days}
-                  onChange={handleDays}
-                  label="Days"
+                <Box mt={5}>
+                  <Typography variant="h6">Status</Typography>
+                </Box>
+                <Box className="paperBadge">
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">
+                    Requires manual attention
+                  </Typography>
+                </Box>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 10,
+                  }}
                 >
-                  <MenuItem value={7}>Last 7 days</MenuItem>
-                  <MenuItem value={14}>Last 14 days</MenuItem>
-                  <MenuItem value={18}>Last 28 days</MenuItem>
-                </Select>
-              </FormControl>
-              <Paper className="badge" style={{ marginLeft: 10 }}>
-                <Typography variant="caption">Require manual action</Typography>
-                <ErrorIcon
-                  fontSize="large"
-                  style={{
-                    position: "relative",
-                    top: 5,
-                    float: "right",
-                    marginLeft: 10,
-                    color: "red",
-                  }}
-                />
-                <Typography variant="body1">
-                  <strong>34</strong>
-                </Typography>
-              </Paper>
-              <Paper className="badge">
-                <Typography variant="caption">Marked as Safe</Typography>
-                <VerifiedUserIcon
-                  fontSize="large"
-                  style={{
-                    position: "relative",
-                    top: 5,
-                    float: "right",
-                    marginLeft: 10,
-                    color: "darkcyan",
-                  }}
-                />
-                <Typography variant="body1">
-                  <strong>34</strong>
-                </Typography>
-              </Paper>
-              <Paper className="badge">
-                <Typography variant="caption">Hidden</Typography>
-                <VisibilityOffIcon
-                  fontSize="large"
-                  style={{
-                    position: "relative",
-                    top: 5,
-                    float: "right",
-                    marginLeft: 10,
-                    color: "orange",
-                  }}
-                />
-                <Typography variant="body1">
-                  <strong>34</strong>
-                </Typography>
-              </Paper>
-            </Box>
-            <Typography variant="caption">Showing 36 comments</Typography>
-            <Box className="chats">
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-              <ChatCard />
-            </Box>
-          </Grid>
-
-          <Grid item xs={4}>
-            <Paper className={classes.paper}>
-              <Box className="paperBadge">
-                <Avatar
-                  alt="User"
-                  src="/user.svg"
-                  className={classes.large}
-                  style={{ marginRight: 20 }}
-                />
-
-                <Box style={{ flexDirection: "column", lineHeight: 0 }}>
-                  <Typography variant="h6">Prayag Mukhi</Typography>
-                  <Typography variant="caption">2:03 PM, Today</Typography>
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">Marked Safe by:</Typography>
                 </Box>
-              </Box>
-              <Box style={{ display: "block" }}>
-                <Typography variant="body2">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Facilis, sed corporis vel impedit accusamus iure quisquam
-                  totam quis, modi aliquam nam, ratione aperiam doloribus. Vitae
-                  eum labore vel veniam accusamus!
-                </Typography>
-                <img
-                  src="https://source.unsplash.com/random/1600x900"
-                  width="100%"
-                  height={300}
-                  style={{ marginTop: 10 }}
-                  alt="random"
-                />
-              </Box>
-
-              <Box className="paperBadge">
-                <Avatar
-                  alt="User"
-                  src="/user.svg"
-                  className={classes.large}
-                  style={{ marginRight: 20 }}
-                />
-
-                <Box style={{ flexDirection: "column", lineHeight: 0 }}>
-                  <Typography variant="h6">Prayag Mukhi</Typography>
-                  <Typography variant="caption">2:03 PM, Today</Typography>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 50,
+                  }}
+                >
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    size="small"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="caption">Manual action</Typography>
                 </Box>
-                <DoneIcon style={{ marginLeft: "auto" }} />
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 50,
+                  }}
+                >
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    size="small"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="caption">AI</Typography>
+                </Box>
+
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 10,
+                  }}
+                >
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="body1">Marked Safe by:</Typography>
+                </Box>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 50,
+                  }}
+                >
+                  <Checkbox
+                    defaultChecked={false}
+                    color="primary"
+                    size="small"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="caption">Manual action</Typography>
+                </Box>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: 50,
+                  }}
+                >
+                  <Checkbox
+                    defaultChecked
+                    color="primary"
+                    size="small"
+                    inputProps={{ "aria-label": "secondary checkbox" }}
+                  />
+                  <Typography variant="caption">Keyword</Typography>
+                </Box>
+              </Paper>
+
+              <Paper className={classes.paper}>
+                <Box mb={1}>
+                  <Typography variant="h6">Plans and Usage</Typography>
+                </Box>
+
+                <Typography variant="body1">Accounts Connected</Typography>
+                <Slider
+                  defaultValue={2}
+                  aria-labelledby="discrete-slider"
+                  valueLabelDisplay="auto"
+                  step={1}
+                  marks
+                  min={0}
+                  max={3}
+                />
+                <Typography variant="body1">Comments processed</Typography>
+                <Slider
+                  defaultValue={5000}
+                  aria-labelledby="discrete-slider"
+                  valueLabelDisplay="auto"
+                  step={1000}
+                  marks
+                  min={0}
+                  max={10000}
+                />
+              </Paper>
+            </Grid>
+
+            <Grid item xs={5}>
+              <Box className="paperBadge" style={{ flexWrap: "wrap" }}>
+                <Box mr={1}>
+                  <Typography variant="body1">Date Range :</Typography>
+                </Box>
+
+                <FormControl variant="outlined" className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Time
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={days}
+                    onChange={handleDays}
+                    label="Days"
+                  >
+                    <MenuItem value={7}>Last 7 days</MenuItem>
+                    <MenuItem value={14}>Last 14 days</MenuItem>
+                    <MenuItem value={18}>Last 28 days</MenuItem>
+                  </Select>
+                </FormControl>
+                <Paper className="badge" style={{ marginLeft: 10 }}>
+                  <Typography variant="caption">
+                    Require manual action
+                  </Typography>
+                  <ErrorIcon
+                    fontSize="large"
+                    style={{
+                      position: "relative",
+                      top: 5,
+                      float: "right",
+                      marginLeft: 10,
+                      color: "red",
+                    }}
+                  />
+                  <Typography variant="body1">
+                    <strong>34</strong>
+                  </Typography>
+                </Paper>
+                <Paper className="badge">
+                  <Typography variant="caption">Marked as Safe</Typography>
+                  <VerifiedUserIcon
+                    fontSize="large"
+                    style={{
+                      position: "relative",
+                      top: 5,
+                      float: "right",
+                      marginLeft: 10,
+                      color: "darkcyan",
+                    }}
+                  />
+                  <Typography variant="body1">
+                    <strong>34</strong>
+                  </Typography>
+                </Paper>
+                <Paper className="badge">
+                  <Typography variant="caption">Hidden</Typography>
+                  <VisibilityOffIcon
+                    fontSize="large"
+                    style={{
+                      position: "relative",
+                      top: 5,
+                      float: "right",
+                      marginLeft: 10,
+                      color: "orange",
+                    }}
+                  />
+                  <Typography variant="body1">
+                    <strong>34</strong>
+                  </Typography>
+                </Paper>
               </Box>
-              <Box style={{ display: "block" }}>
-                <Typography variant="body2">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Facilis, sed corporis vel impedit accusamus iure quisquam
-                  totam quis, modi aliquam nam, ratione aperiam doloribus. Vitae
-                  eum labore vel veniam accusamus!
-                </Typography>
+              <Typography variant="caption">Showing 36 comments</Typography>
+              <Box className="chats">
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
+                <ChatCard />
               </Box>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="reply"
-                label="Write a reply"
-                id="reply"
-                size="small"
-              />
-              <Box style={{ display: "flex" }}>
-                <Chip
-                  size="small"
+            </Grid>
+
+            <Grid item xs={4}>
+              <Paper className={classes.paper}>
+                <Box className="paperBadge">
+                  <Avatar
+                    alt="User"
+                    src="/user.svg"
+                    className={classes.large}
+                    style={{ marginRight: 20 }}
+                  />
+
+                  <Box style={{ flexDirection: "column", lineHeight: 0 }}>
+                    <Typography variant="h6">Prayag Mukhi</Typography>
+                    <Typography variant="caption">2:03 PM, Today</Typography>
+                  </Box>
+                </Box>
+                <Box style={{ display: "block" }}>
+                  <Typography variant="body2">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Facilis, sed corporis vel impedit accusamus iure quisquam
+                    totam quis, modi aliquam nam, ratione aperiam doloribus.
+                    Vitae eum labore vel veniam accusamus!
+                  </Typography>
+                  <img
+                    src="https://source.unsplash.com/random/1600x900"
+                    width="100%"
+                    height={300}
+                    style={{ marginTop: 10 }}
+                    alt="random"
+                  />
+                </Box>
+
+                <Box className="paperBadge">
+                  <Avatar
+                    alt="User"
+                    src="/user.svg"
+                    className={classes.large}
+                    style={{ marginRight: 20 }}
+                  />
+
+                  <Box style={{ flexDirection: "column", lineHeight: 0 }}>
+                    <Typography variant="h6">Prayag Mukhi</Typography>
+                    <Typography variant="caption">2:03 PM, Today</Typography>
+                  </Box>
+                  <DoneIcon style={{ marginLeft: "auto" }} />
+                </Box>
+                <Box style={{ display: "block" }}>
+                  <Typography variant="body2">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Facilis, sed corporis vel impedit accusamus iure quisquam
+                    totam quis, modi aliquam nam, ratione aperiam doloribus.
+                    Vitae eum labore vel veniam accusamus!
+                  </Typography>
+                </Box>
+                <TextField
                   variant="outlined"
-                  label="Like"
-                  clickable
-                  color="primary"
-                  onDelete={handleDelete}
-                  deleteIcon={<ThumbUpAltIcon />}
-                />
-                <Chip
+                  margin="normal"
+                  fullWidth
+                  name="reply"
+                  label="Write a reply"
+                  id="reply"
                   size="small"
-                  variant="outlined"
-                  label="Ban"
-                  clickable
-                  color="secondary"
-                  onDelete={handleDelete}
-                  deleteIcon={<BlockIcon />}
-                  style={{ marginLeft: 10 }}
                 />
-                <Box ml="auto">
-                  <Button variant="contained" color="primary">
-                    Reply
-                  </Button>
+                <Box style={{ display: "flex" }}>
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label="Like"
+                    clickable
+                    color="primary"
+                    onDelete={handleDelete}
+                    deleteIcon={<ThumbUpAltIcon />}
+                  />
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label="Ban"
+                    clickable
+                    color="secondary"
+                    onDelete={handleDelete}
+                    deleteIcon={<BlockIcon />}
+                    style={{ marginLeft: 10 }}
+                  />
+                  <Box ml="auto">
+                    <Button variant="contained" color="primary">
+                      Reply
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            </Paper>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <Touchview />;
+  }
 }
